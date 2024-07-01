@@ -1,6 +1,7 @@
 """
 This module contains shared functions for the 2.1 task.
 """
+from typing import List
 
 import numpy as np
 from numpy.typing import NDArray
@@ -39,13 +40,18 @@ def solve(n: int):
     return chase_method(A, b)
 
 
-def plot(x: NDArray, y: NDArray):
+def plot(x: NDArray | List, y: NDArray):
     n = len(y) + 1
     y = np.concatenate(([0], y, [0]))
-    _, ax = plt.subplots()
-    ax.plot(x, y, label=f"n={n}")
-    ax.scatter(x, y, s=5)
-    ax.set_xlabel("x")
-    ax.set_ylabel("u")
-    ax.legend()
+    # _, ax = plt.subplots()
+    # ax.plot(x, y, label=f"n={n}")
+    # ax.scatter(x, y, s=5)
+    # ax.set_xlabel("x")
+    # ax.set_ylabel("u")
+    # ax.legend()
+    plt.plot(x, y, label=f"n={n}")
+    plt.scatter(x, y, s=5)
+    plt.xlabel("x")
+    plt.ylabel("u")
+    plt.legend()
     plt.show()
