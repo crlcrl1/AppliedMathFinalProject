@@ -1,7 +1,5 @@
 from typing import List
-
 import matplotlib.pyplot as plt
-from numpy.typing import NDArray
 
 from shared import *
 
