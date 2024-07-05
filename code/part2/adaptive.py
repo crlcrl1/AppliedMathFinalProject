@@ -1,3 +1,7 @@
+"""
+Adaptive method for FEM
+"""
+
 import scipy.integrate as spi
 
 from shared import *

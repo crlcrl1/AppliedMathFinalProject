@@ -1,5 +1,6 @@
-from typing import List
-import matplotlib.pyplot as plt
+"""
+Problem D: L2 error of the solution
+"""
 
 from shared import *
 

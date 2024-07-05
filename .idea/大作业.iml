@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
-    <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/.idea/httpRequests" />
+      <excludeFolder url="file://$MODULE_DIR$/code/part3/cmake-build-debug/CMakeFiles/3.28.1/CompilerIdC/tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/code/part3/cmake-build-debug/CMakeFiles/3.28.1/CompilerIdCXX/tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/code/part3/cmake-build-debug/CMakeFiles/pkgRedirects" />
+      <excludeFolder url="file://$MODULE_DIR$/code/part3/cmake-build-debug/CMakeFiles/temp.dir" />
+      <excludeFolder url="file://$MODULE_DIR$/code/part3/cmake-build-debug/CMakeFiles/test.dir" />
+      <excludeFolder url="file://$MODULE_DIR$/code/part3/cmake-build-release/CMakeFiles/3.28.1/CompilerIdC/tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/code/part3/cmake-build-release/CMakeFiles/3.28.1/CompilerIdCXX/tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/code/part3/cmake-build-release/CMakeFiles/pkgRedirects" />
+      <excludeFolder url="file://$MODULE_DIR$/code/part3/cmake-build-release/CMakeFiles/temp.dir" />
+      <excludeFolder url="file://$MODULE_DIR$/code/part3/cmake-build-release/CMakeFiles/test.dir" />
+    </content>
     <orderEntry type="jdk" jdkName="Python 3.11" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
