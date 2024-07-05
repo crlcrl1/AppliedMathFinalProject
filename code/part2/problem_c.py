@@ -1,3 +1,7 @@
+"""
+Problem C: f = 1, u(0) = u(1) = 0
+"""
+
 from shared import *
 
 
