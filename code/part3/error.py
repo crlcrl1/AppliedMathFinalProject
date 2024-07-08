@@ -1,13 +1,15 @@
+from typing import List, Dict
+
 from scipy import integrate as spi
 from math import exp, sin, pi, cos
 import matplotlib.pyplot as plt
 
 
-def get_output(n: int):
+def get_output(n: int, method: str):
     """
     Get the output of the solution from file
     """
-    with open(f"output_{n}.txt", "r") as f:
+    with open(f"output_{n}_{method}.txt", "r") as f:
         lines = f.readlines()
         temp = [list(map(float, line.strip().split())) for line in lines]
         for i in range(n - 1):
@@ -33,11 +35,11 @@ def u_exact_grad(x: float, y: float):
             pi * exp(-2 * pi ** 2) * sin(pi * x) * cos(pi * y))
 
 
-def calculate_error(n: int):
+def calculate_error(n: int, method: str):
     """
     Calculate the error of the solution
     """
-    u = get_output(n)
+    u = get_output(n, method)
     error1 = 0.0
     error2 = 0.0
     h = 1 / n
@@ -62,26 +64,47 @@ def calculate_error(n: int):
     return error1 ** 0.5, error2 ** 0.5
 
 
-def write_to_file(n_list: list, res: list, filename: str = "error.txt"):
+def write_to_file(n_list: List, res: Dict, filename: str):
     """
     Write the result to file
     """
     with open(filename, "w") as f:
-        for n, error in zip(n_list, res):
-            f.write(f"n = {n}, error = {error}\n")
+        for method in res.keys():
+            f.write(f"{method}:\n")
+            for n, error in zip(n_list, res[method]):
+                f.write(f"n = {n}\terror = {error}\n")
+            f.write("\n")
+
+
+def plot(n_list: List, errors: Dict):
+    """
+    Plot the error
+    """
+    for method in errors.keys():
+        plt.loglog(n_list, errors[method], marker="o", label=method)
+    plt.xlabel("n")
+    plt.ylabel("error")
+    plt.legend()
+    plt.show()
+
 
 if __name__ == "__main__":
     n_list = [4, 8, 16, 32, 64, 128]
-    errors1 = []
-    errors2 = []
-    for n in n_list:
-        error1, error2 = calculate_error(n)
-        errors1.append(error1)
-        errors2.append(error2)
+    method_list = ["explicit", "Crank-Nicolson", "implicit"]
+    errors1_dict = {}
+    errors2_dict = {}
+    for method in method_list:
+        errors1 = []
+        errors2 = []
+        for n in n_list:
+            error1, error2 = calculate_error(n, method)
+            errors1.append(error1)
+            errors2.append(error2)
+        errors1_dict[method] = errors1
+        errors2_dict[method] = errors2
     
-    write_to_file(n_list, errors1, "error_L2.txt")
-    write_to_file(n_list, errors2, "error_H1.txt")
+    write_to_file(n_list, errors1_dict, "error_L2.txt")
+    write_to_file(n_list, errors2_dict, "error_H1.txt")
     
-    plt.loglog(n_list, errors1, marker="o", label="L2 error")
-    plt.loglog(n_list, errors2, marker="o", label="H1 error")
-    plt.show()
+    plot(n_list, errors1_dict)
+    plot(n_list, errors2_dict)

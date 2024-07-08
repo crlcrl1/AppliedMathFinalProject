@@ -71,4 +71,4 @@ def solve(n: int, alpha: float):
 
 
 if __name__ == "__main__":
-    solve(80, 0.1)
+    solve(80, 0.9)

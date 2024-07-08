@@ -169,7 +169,6 @@ vector<double> generate_initial(const int n) {
     return u;
 }
 
-// Optimize
 vector<double> generate_b(const int n, const Method method, const vector<double> &u,
                           const int t_n) {
     auto res = vector((n - 1) * (n - 1), 0.0);
@@ -258,14 +257,14 @@ vector<double> solve(const int n, const Method method, const int t_n) {
         if (t % 100 == 0) {
             progress_bar(t, t_n);
         }
-        auto b = generate_b(n, method, u, 1);
+        auto b = generate_b(n, method, u, t_n);
         u = LDL_solution(A, v, b);
     }
     return u;
 }
 
-void write_to_file(const vector<double> &u, const int n) {
-    ofstream file(format("output_{}.txt", n));
+void write_to_file(const vector<double> &u, const int n, const string &method_str) {
+    ofstream file(format("output_{}_{}.txt", n, method_str));
     for (int i = 0; i < n - 1; ++i) {
         for (int j = 0; j < n - 1; ++j) {
             file << scientific << setprecision(5) << u[i * (n - 1) + j] << " ";
@@ -275,11 +274,43 @@ void write_to_file(const vector<double> &u, const int n) {
     file.close();
 }
 
-int main() {
-    constexpr int n = 128;
+void print_usage() {
+    cout << "Usage: ./main -n <n> -m <method>" << endl;
+    cout << "n: the number of grid points" << endl;
+    cout << "method: 0 for explicit, 1 for Crank-Nicolson, 2 for implicit" << endl;
+    exit(1);
+}
+
+void parse_argument(const int argc, char *argv[], int &n, Method &method) {
+    if (argc != 5) {
+        print_usage();
+    }
+    if (strcmp(argv[1], "-n") != 0 || strcmp(argv[3], "-m") != 0) {
+        print_usage();
+    }
+    char *end;
+    n = strtol(argv[2], &end, 10);
+    if (*end != '\0' || n <= 0) {
+        print_usage();
+    }
+    const int m = strtol(argv[4], &end, 10);
+    if (*end != '\0' || m < 0 || m > 2) {
+        print_usage();
+    }
+    method = static_cast<Method>(m);
+}
+
+int main(int argc, char *argv[]) {
+    int n;
+    Method method;
+    parse_argument(argc, argv, n, method);
     cout << "n = " << n << endl;
+    const auto method_str = method == Method::EXPLICIT         ? "explicit"
+                            : method == Method::CRANK_NICOLSON ? "Crank-Nicolson"
+                                                               : "implicit";
+    cout << "method = " << method_str << endl;
     const auto start = high_resolution_clock::now();
-    const auto u = solve(n, Method::IMPLICIT, 10 * n * n);
+    const auto u = solve(n, method, 12 * n * n);
     const auto end = high_resolution_clock::now();
     cout << endl;
     cout << "Time: " << fixed << setprecision(4)
@@ -288,6 +319,6 @@ int main() {
     cout << scientific << setprecision(5) << u[n * (n / 2 - 1)] << endl;
     cout << scientific << setprecision(5)
          << "error = " << abs(u[n * (n / 2 - 1)] - exp(-2 * PI * PI)) << endl;
-    write_to_file(u, n);
+    write_to_file(u, n, method_str);
     return 0;
 }

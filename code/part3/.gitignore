@@ -1,3 +1,4 @@
 output*.txt
 error*.txt
 /cmake-build-*/
+/build/
