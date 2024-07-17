@@ -16,6 +16,9 @@ def f(x):
 
 
 def setup():
+    """
+    Set up the global variables
+    """
     global node_list
     global cache
     node_list = np.linspace(0, 1, 11).tolist()
@@ -23,6 +26,9 @@ def setup():
 
 
 def calculate_integral():
+    """
+    Calculate the integral of f^2 on each interval
+    """
     n = len(node_list) - 1
     cache.clear()
     for i in range(n):
@@ -30,6 +36,11 @@ def calculate_integral():
 
 
 def densify(alpha: float):
+    """
+    Densify the node list based on the integral values
+    
+    :param alpha: if the integral value is greater than alpha * max, add a new node in the middle
+    """
     global node_list
     max_v = max(cache)
     new_node_list = []
@@ -42,6 +53,9 @@ def densify(alpha: float):
 
 
 def generate_A(node_list: List[float]):
+    """
+    Generate matrix A for the partition
+    """
     n = len(node_list) - 1
     temp = np.zeros((n - 1, n - 1), dtype=np.float64)
     h_list = [1 / (node_list[i + 1] - node_list[i]) for i in range(n)]
@@ -54,6 +68,9 @@ def generate_A(node_list: List[float]):
 
 
 def generate_b(node_list: List[float]):
+    """
+    Generate vector b for the partition
+    """
     n = len(node_list) - 1
     h_list = [node_list[i + 1] - node_list[i] for i in range(n)]
     return np.array([f(node_list[i + 1]) * (h_list[i] + h_list[i + 1]) / 2 for i in range(n - 1)],
@@ -61,6 +78,13 @@ def generate_b(node_list: List[float]):
 
 
 def solve(n: int, alpha: float):
+    """
+    Solve the equation with adaptive partition
+    
+    :param n: the boundary of the number of intervals
+    :param alpha: in each iteration, if the integral value is greater than alpha * max,
+        add a new node in the middle
+    """
     setup()
     while len(node_list) <= n:
         calculate_integral()

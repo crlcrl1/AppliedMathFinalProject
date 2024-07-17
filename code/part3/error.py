@@ -67,6 +67,10 @@ def calculate_error(n: int, method: str):
 def write_to_file(n_list: List, res: Dict, filename: str):
     """
     Write the result to file
+    
+    :param n_list: the list of n
+    :param res: a dictionary with method name as key and a list of errors as value
+    :param filename: the name of the file to write
     """
     with open(filename, "w") as f:
         for method in res.keys():

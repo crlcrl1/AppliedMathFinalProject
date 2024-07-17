@@ -1,6 +1,7 @@
 """
 This module contains shared functions for the 2.1 task.
 """
+
 from typing import List
 
 import numpy as np

@@ -1,10 +1,8 @@
-%! TEX TS-program = xelatex
-
 \documentclass[UTF8]{article}
 \usepackage{amsmath, amsthm, amssymb, graphicx, listings, xcolor, geometry, microtype, framed}
 \usepackage{CTEX, subfigure}
 \usepackage{graphicx}
-\geometry{left=3cm, right=3cm, top=3cm, bottom=3cm}
+\geometry{left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm}
 \ctexset{today=old}
 
 \title{\textbf{应用数学导论大作业报告}}
@@ -75,10 +73,10 @@
         \end{pmatrix}
     \]
 
-    在这个问题中, 我们取等距的分点, 并使用 Python 来完成计算.
+    在这个问题中, 我们取等距的分点, 并使用 Python 来完成计算, 具体代码参见 part2/shared.py 和 part2/problem\_c.py.
     取 $n$ 个分点时, 矩阵 $A$ 的主对角线上的元素为 $2n$, 两条次对角线上的元素为 $-n$, 向量 $b$ 的所有元素都是 $1/n$.
 
-    对于 $n = 10,20,40,80$ 我们使用有限元方法得到的解的图像如下:
+    对于 $n = 10,20,40,80$ 我们使用有限元方法得到的解的图像如下 (图~\ref{fig:figure1}).
 
     \begin{figure}[h]
         \centering
@@ -95,18 +93,20 @@
         \subfigure[$n=80$]{
             \includegraphics[width=0.45\textwidth]{./assets/80}
         }
+        \label{fig:figure1}
     \end{figure}
 
     从图中可以看出, 随着 $n$ 的增大, 数值解逐渐逼近真实解 $u(x) = x(1-x)$.
     \newline
 
     \paragraph{(d)}
-    对于 $n = 2,4,8,16,32,64.128$, 我们计算了有限元解与真解的误差 $\lVert \frac{\textrm{d}(u-u_h)}{\textrm{d}x} \rVert^2_{L^2(\Omega)}$, 并绘制表格和 log-log 图像:
+    对于 $n = 2,4,8,16,32,64.128$, 我们计算了有限元解与真解的误差 $\lVert \frac{\textrm{d}(u-u_h)}{\textrm{d}x} \rVert^2_{L^2(\Omega)}$, 并绘制表格和 log-log 图像 (图~\ref{fig:figure2}, 表~\ref{tab:table1}), 具体代码参见 part2/shared.py 和 part2/problem\_d.py.
 
     \begin{figure}
         \centering
         \caption{误差随 $n$ 的变化}
         \includegraphics[width=0.4\textwidth]{./assets/fig1}
+        \label{fig:figure2}
     \end{figure}
 
     \begin{table}
@@ -125,6 +125,7 @@
             128 & 0.002255 \\
             \hline
         \end{tabular}
+        \label{tab:table1}
     \end{table}
 
     从图像和表格中都不难看出，误差大致与 $1/n$ 成正比.
@@ -136,7 +137,7 @@
     \[
         Ch_i\left( \int_{x_i}^{x_{i+1}} \left( f(x)+ \frac{\textrm{d}^2 u_h}{\textrm{d}x^2}\right)^2 \textrm{d}x \right)^{1/2}
     \]
-    控制, 并且在我们的问题中 $u_h$ 时一个分段线性函数, 从而 $\frac{\textrm{d}^2 u_h}{\textrm{d}x^2}$ 是一个常数, 所有我们可以近似的用
+    控制, 并且在我们的问题中 $u_h$ 时一个分段线性函数, 从而 $\frac{\textrm{d}^2 u_h}{\textrm{d}x^2}$ 是 0, 所以我们可以近似地用
     \[
         h_i\left( \int_{x_i}^{x_{i+1}} f^2(x)\textrm{d}x \right)^{1/2}
     \]
@@ -145,7 +146,7 @@
     初始时, 我们取十个分点, 并使用有限元方法求解.
     然后我们在每一段上计算 $\eta_j=h_i\left( \int_{x_i}^{x_{i+1}} f^2(x)\textrm{d}x \right)^{1/2}$, 并在每一次迭代时取 $\eta_j>\alpha \max(\eta_i)$ 的单元进行加密, 加密的方法是在原有节点的中点插入一个新的节点, 直到分点数目大于指定值为止.
 
-    我们首先固定 $\alpha=0.5$ 并取 $n<40,80,160$ 进行计算, 得到的解的图像如下:
+    我们首先固定 $\alpha=0.5$ 并取 $n<40,80,160$ 进行计算, 得到的解的图像如下~\ref{fig:figure3}.
 
     \begin{figure}[h]
         \centering
@@ -162,12 +163,13 @@
         \subfigure[$n=160$]{
             \includegraphics[width=0.4 \textwidth]{./assets/adaptive/160}
         }
+        \label{fig:figure3}
     \end{figure}
 
     从图中可以看出, 随着 $n$ 的增大, 停止迭代时分别取了 52, 98, 182 个分点, 并且新增的分点都集中在函数导数的绝对值较大处, 也就是 $x=0.5$ 附近.
     \newline
 
-    然后，我们固定 $n=80$, 分别取 $\alpha=0.1,0.25,0.5,0.9$ 进行计算, 得到的解的图像如下:
+    然后，我们固定 $n=80$, 分别取 $\alpha=0.1,0.25,0.5,0.9$ 进行计算, 得到的解的图像如下 (图~\ref{fig:figure4}).
 
     \begin{figure}[h]
         \centering
@@ -184,9 +186,12 @@
         \subfigure[$\alpha=0.9$]{
             \includegraphics[width=0.4\textwidth]{./assets/adaptive/0_9}
         }
+        \label{fig:figure4}
     \end{figure}
 
     虽然在这四种 $\alpha$ 的取值中, 停止迭代的条件都是相同的, 但是在停止迭代时分别取了 148, 124, 98, 84 个分点, 由此可以看出 $\alpha$ 的取值过小可能会导致过度加密, 从而增加计算量.
+
+    本节的代码参见 part2/adaptive.py.
 
 
     \section{二维热传导方程的有限元方法}
@@ -278,20 +283,23 @@
     例如, 当空间方向的单元数为 $n^2$ 时, 时间方向上的分点也取 $n^2$ 时, 隐式格式和 Crank-Nicolson 格式都是稳定的, 二显示格式不是稳定的.
     为了使三种格式都是稳定的, 我们取时间方向上的分点个数为 $12n^2$.
 
-    画出三种格式的解的误差关于 $n$ 的图像如下:
+    画出三种格式的解的误差关于 $n$ 的图像如下(图~\ref{fig:figure5}, 图~\ref{fig:figure6}).
+    从图中可以看出, 无论使用哪一种误差的计算方式, 在数值精度上都是隐式格式 $>$ Crank-Nicolson 格式 $>$ 显式格式.
+    我们还可以看出, 三种格式使用 $\|u(1,x,y)-u_h(1,x,y)\|_0$ 计算出的误差都大致与 $1/n^{-2}$ 成正比, 隐式格式使用 $\|\nabla(u(1,x,y)-u_h(1,x,y))\|_0$ 计算出的误差都大致与 $1/n^{-1}$ 成正比.
 
     \begin{figure}[h]
         \centering
         \caption{误差 $\|u(1,x,y)-u_h(1,x,y)\|_0$ 随 $n$ 的变化}
         \includegraphics[width=0.7\textwidth]{./assets/L2_error}
+        \label{fig:figure5}
     \end{figure}
 
     \begin{figure}[h]
         \centering
         \caption{误差 $\|\nabla(u(1,x,y)-u_h(1,x,y))\|_0$ 随 $n$ 的变化}
         \includegraphics[width=0.7\textwidth]{./assets/H1_error}
+        \label{fig:figure6}
     \end{figure}
-
-    从图中可以看出, 无论使用哪一种误差的计算方式, 在数值精度上都是隐式格式 $>$ Crank-Nicolson 格式 $>$ 显式格式.
-    我们还可以看出, 三种格式使用 $\|u(1,x,y)-u_h(1,x,y)\|_0$ 计算出的误差都大致与 $1/n^{-2}$ 成正比, 隐式格式使用 $\|\nabla(u(1,x,y)-u_h(1,x,y))\|_0$ 计算出的误差都大致与 $1/n^{-1}$ 成正比.
+    
+    本节有限元方法求解的 C++ 代码和编译说明参见 part3/main.cpp, 计算误差的 Python 代码参见 part3/error.py.
 \end{document}

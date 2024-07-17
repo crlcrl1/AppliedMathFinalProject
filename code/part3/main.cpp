@@ -1,12 +1,22 @@
+/**
+ * Solve the heat equation using the LDL^T decomposition.
+ *
+ * To compile the code, you should have cmake installed and a C++ compiler that supports C++20.
+ * Run the following commands to compile the code:
+ * cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+ * cmake --build build
+ */
+
 #include <cassert>
 #include <chrono>
 #include <cmath>
 #include <format>
-#include <fstream>
-#include <iomanip>
 #include <iostream>
 #include <vector>
 
+#include "util.h"
+
+// The value of PI. On some platforms, the macro M_PI may not be defined.
 constexpr double PI = 3.14159265358979323846;
 
 
@@ -14,7 +24,8 @@ using namespace std;
 using namespace chrono;
 
 /**
- * A class to view the memory-optimized matrix as a normal matrix
+ * A class to view the memory-optimized matrix as a normal matrix.
+ * It is used to map the index between the memory-optimized matrix and the normal matrix.
  */
 class MatrixView {
     vector<vector<double>> *original;
@@ -28,6 +39,9 @@ public:
         stripSize = (original[0].size() - 1) / 2;
     }
 
+    /**
+     * Get the element at the position (i, j) in the memory-optimized matrix
+     */
     double &operator()(const int i, const int j) const { return (*original)[i][j - i + stripSize]; }
 
     size_t getDim() const { return dim; }
@@ -37,7 +51,10 @@ public:
 
 
 /**
- * LDL^T decomposition
+ * LDL^T decomposition.
+ *
+ * @param A the coefficient matrix. This matrix will be modified in place to store the L matrix.
+ * @param v the vector to store the diagonal elements of the matrix D.
  */
 void LDL_decomposition(vector<vector<double>> &A, vector<double> &v) {
     const MatrixView view(A);
@@ -76,6 +93,9 @@ void LDL_decomposition(vector<vector<double>> &A, vector<double> &v) {
     }
 }
 
+/**
+ * Forward elimination after the LDL^T decomposition
+ */
 void forward_elimination(vector<vector<double>> &A, vector<double> &b) {
     const MatrixView view(A);
     const int d = static_cast<int>(view.getDim());
@@ -90,6 +110,9 @@ void forward_elimination(vector<vector<double>> &A, vector<double> &b) {
     b[d - 1] /= view(d - 1, d - 1);
 }
 
+/**
+ * Backward elimination after the LDL^T decomposition
+ */
 void backward_elimination(vector<vector<double>> &A, vector<double> &b) {
     const auto view = MatrixView(A);
     const int d = static_cast<int>(view.getDim());
@@ -104,6 +127,14 @@ void backward_elimination(vector<vector<double>> &A, vector<double> &b) {
     b[0] /= view(0, 0);
 }
 
+/**
+ * Solve the linear system after the LDL^T decomposition
+ *
+ * @param A The coefficient matrix modified by the LDL^T decomposition
+ * @param v The diagonal elements of the matrix D
+ * @param b The right-hand side vector to be solved
+ * @return The solution of the linear system
+ */
 vector<double> LDL_solution(vector<vector<double>> &A, const vector<double> &v, vector<double> &b) {
     const size_t d = b.size();
     forward_elimination(A, b);
@@ -114,8 +145,9 @@ vector<double> LDL_solution(vector<vector<double>> &A, const vector<double> &v, 
     return b;
 }
 
-enum class Method : int { EXPLICIT = 0, IMPLICIT = 2, CRANK_NICOLSON = 1 };
-
+/**
+ * Generate the coefficient matrix A
+ */
 vector<vector<double>> generate_A(const int n, const Method method, const int t_n) {
     const double dt = 1.0 / t_n;
     const double dx = 1.0 / n;
@@ -159,6 +191,9 @@ vector<vector<double>> generate_A(const int n, const Method method, const int t_
     return A;
 }
 
+/**
+ * Generate the initial values according to the initial condition
+ */
 vector<double> generate_initial(const int n) {
     auto u = vector((n - 1) * (n - 1), 0.0);
     for (int i = 0; i < n - 1; i++) {
@@ -169,6 +204,9 @@ vector<double> generate_initial(const int n) {
     return u;
 }
 
+/**
+ * Generate the right-hand side vector b for each time step
+ */
 vector<double> generate_b(const int n, const Method method, const vector<double> &u,
                           const int t_n) {
     auto res = vector((n - 1) * (n - 1), 0.0);
@@ -212,47 +250,16 @@ vector<double> generate_b(const int n, const Method method, const vector<double>
     return res;
 }
 
-void progress_bar(const int current, const int total) {
-    static time_point<steady_clock> lastCallTime;
-    static int lastItemCount = 0;
-    constexpr int barWidth = 70;
-    cout << "[";
-    const int pos = static_cast<int>(barWidth * current / static_cast<double>(total));
-    for (int i = 0; i < barWidth; ++i) {
-        if (i < pos) {
-            cout << "=";
-        }
-        else if (i == pos) {
-            cout << ">";
-        }
-        else {
-            cout << " ";
-        }
-    }
-    cout << "] " << fixed << setprecision(2) << static_cast<int>(100.0 * current / total) << "%";
-    if (lastItemCount != 0) {
-        const auto now = high_resolution_clock::now();
-        const auto duration = duration_cast<milliseconds>(now - lastCallTime).count();
-        const int itemCount = current - lastItemCount;
-        cout << "  " << itemCount / (static_cast<double>(duration) / 1000.0) << " it/s";
-        lastCallTime = now;
-        lastItemCount = current;
-    }
-    else {
-        cout << "  0.00 it/s";
-        lastCallTime = high_resolution_clock::now();
-        lastItemCount = current;
-    }
-    cout << '\r';
-    cout.flush();
-}
-
+/**
+ * Solve the heat equation
+ */
 vector<double> solve(const int n, const Method method, const int t_n) {
     auto A = generate_A(n, method, t_n);
     auto u = generate_initial(n);
     auto v = vector((n - 1) * (n - 1), 0.0);
     LDL_decomposition(A, v);
     cout << endl;
+    cout << "\033[?25l";
     for (int t = 0; t < t_n; ++t) {
         if (t % 100 == 0) {
             progress_bar(t, t_n);
@@ -260,45 +267,10 @@ vector<double> solve(const int n, const Method method, const int t_n) {
         auto b = generate_b(n, method, u, t_n);
         u = LDL_solution(A, v, b);
     }
+    cout << "\033[?25h";
     return u;
 }
 
-void write_to_file(const vector<double> &u, const int n, const string &method_str) {
-    ofstream file(format("output_{}_{}.txt", n, method_str));
-    for (int i = 0; i < n - 1; ++i) {
-        for (int j = 0; j < n - 1; ++j) {
-            file << scientific << setprecision(5) << u[i * (n - 1) + j] << " ";
-        }
-        file << endl;
-    }
-    file.close();
-}
-
-void print_usage() {
-    cout << "Usage: ./main -n <n> -m <method>" << endl;
-    cout << "n: the number of grid points" << endl;
-    cout << "method: 0 for explicit, 1 for Crank-Nicolson, 2 for implicit" << endl;
-    exit(1);
-}
-
-void parse_argument(const int argc, char *argv[], int &n, Method &method) {
-    if (argc != 5) {
-        print_usage();
-    }
-    if (strcmp(argv[1], "-n") != 0 || strcmp(argv[3], "-m") != 0) {
-        print_usage();
-    }
-    char *end;
-    n = strtol(argv[2], &end, 10);
-    if (*end != '\0' || n <= 0) {
-        print_usage();
-    }
-    const int m = strtol(argv[4], &end, 10);
-    if (*end != '\0' || m < 0 || m > 2) {
-        print_usage();
-    }
-    method = static_cast<Method>(m);
-}
 
 int main(int argc, char *argv[]) {
     int n;
@@ -308,17 +280,15 @@ int main(int argc, char *argv[]) {
     const auto method_str = method == Method::EXPLICIT         ? "explicit"
                             : method == Method::CRANK_NICOLSON ? "Crank-Nicolson"
                                                                : "implicit";
-    cout << "method = " << method_str << endl;
+    cout << format("Method: {}\n", method_str);
     const auto start = high_resolution_clock::now();
     const auto u = solve(n, method, 12 * n * n);
     const auto end = high_resolution_clock::now();
     cout << endl;
-    cout << "Time: " << fixed << setprecision(4)
-         << static_cast<double>(duration_cast<milliseconds>(end - start).count()) / 1000.0 << "s"
-         << endl;
-    cout << scientific << setprecision(5) << u[n * (n / 2 - 1)] << endl;
-    cout << scientific << setprecision(5)
-         << "error = " << abs(u[n * (n / 2 - 1)] - exp(-2 * PI * PI)) << endl;
+    const auto duration =
+            static_cast<double>(duration_cast<milliseconds>(end - start).count()) / 1000.0;
+    cout << format("Time: {:.4f}s\n", duration);
+    cout << format("Error on the center = {:.5e}\n", abs(u[n * (n / 2 - 1)] - exp(-2 * PI * PI)));
     write_to_file(u, n, method_str);
     return 0;
 }
