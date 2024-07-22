@@ -80,7 +80,6 @@
 
     \begin{figure}[h]
         \centering
-        \caption{$n$ 取不同值时解的图像}
         \subfigure[$n=10$]{
             \includegraphics[width=0.45\textwidth]{./assets/10}
         }
@@ -93,6 +92,7 @@
         \subfigure[$n=80$]{
             \includegraphics[width=0.45\textwidth]{./assets/80}
         }
+        \caption{$n$ 取不同值时解的图像}
         \label{fig:figure1}
     \end{figure}
 
@@ -104,14 +104,13 @@
 
     \begin{figure}
         \centering
-        \caption{误差随 $n$ 的变化}
         \includegraphics[width=0.4\textwidth]{./assets/fig1}
+        \caption{误差随 $n$ 的变化}
         \label{fig:figure2}
     \end{figure}
 
     \begin{table}
         \centering
-        \caption{误差随 $n$ 的变化}
         \begin{tabular}{|c|c|}
             \hline
             $n$ & 误差       \\
@@ -125,6 +124,7 @@
             128 & 0.002255 \\
             \hline
         \end{tabular}
+        \caption{误差随 $n$ 的变化}
         \label{tab:table1}
     \end{table}
 
@@ -150,7 +150,6 @@
 
     \begin{figure}[h]
         \centering
-        \caption{$n$ 取不同值时解的图像}
         \subfigure[$n=20$]{
             \includegraphics[width=0.4\textwidth]{./assets/adaptive/20}
         }
@@ -163,6 +162,7 @@
         \subfigure[$n=160$]{
             \includegraphics[width=0.4 \textwidth]{./assets/adaptive/160}
         }
+        \caption{$n$ 取不同值时解的图像}
         \label{fig:figure3}
     \end{figure}
 
@@ -173,7 +173,6 @@
 
     \begin{figure}[h]
         \centering
-        \caption{$\alpha$ 取不同值时解的图像}
         \subfigure[$\alpha=0.1$]{
             \includegraphics[width=0.4\textwidth]{./assets/adaptive/0_1}
         }
@@ -186,6 +185,7 @@
         \subfigure[$\alpha=0.9$]{
             \includegraphics[width=0.4\textwidth]{./assets/adaptive/0_9}
         }
+        \caption{$\alpha$ 取不同值时解的图像}
         \label{fig:figure4}
     \end{figure}
 
@@ -289,17 +289,17 @@
 
     \begin{figure}[h]
         \centering
-        \caption{误差 $\|u(1,x,y)-u_h(1,x,y)\|_0$ 随 $n$ 的变化}
         \includegraphics[width=0.7\textwidth]{./assets/L2_error}
+        \caption{误差 $\|u(1,x,y)-u_h(1,x,y)\|_0$ 随 $n$ 的变化}
         \label{fig:figure5}
     \end{figure}
 
     \begin{figure}[h]
         \centering
-        \caption{误差 $\|\nabla(u(1,x,y)-u_h(1,x,y))\|_0$ 随 $n$ 的变化}
         \includegraphics[width=0.7\textwidth]{./assets/H1_error}
+        \caption{误差 $\|\nabla(u(1,x,y)-u_h(1,x,y))\|_0$ 随 $n$ 的变化}
         \label{fig:figure6}
     \end{figure}
-    
+
     本节有限元方法求解的 C++ 代码和编译说明参见 part3/main.cpp, 计算误差的 Python 代码参见 part3/error.py.
 \end{document}

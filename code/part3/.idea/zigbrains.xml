@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ZLSSettings">
+    <option name="zlsPath" value="D:\zig\zls.exe" />
+    <option name="highlightGlobalVarDeclarations" value="true" />
+    <option name="dangerousComptimeExperimentsDoNotEnable" value="true" />
+  </component>
+  <component name="ZigProjectSettings">
+    <option name="overrideStdPath" value="true" />
+    <option name="explicitPathToStd" value="D:\zig\lib\std" />
+    <option name="toolchainHomeDirectory" value="D:/zig" />
+  </component>
+</project>
