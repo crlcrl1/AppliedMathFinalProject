@@ -4,7 +4,7 @@
  * To compile the code, you should have cmake installed and a C++ compiler that supports C++20.
  * Run the following commands to compile the code:
  * cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
- * cmake --build build
+ * cmake --build ./build
  */
 
 #include <cassert>

@@ -6,6 +6,10 @@ from shared import *
 
 
 def L2_error(u: NDArray) -> float:
+    """
+    Calculate the L2 error of the solution.
+    Since the error function is a piecewise 2nd order polynomial, we can calculate the precise value of the error.
+    """
     n = len(u) + 1
     u = np.concatenate(([0], u, [0]))
     error = 0.0

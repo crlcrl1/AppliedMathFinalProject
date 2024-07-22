@@ -1,3 +1,7 @@
+"""
+This module is used to calculate the error of the solution
+"""
+
 from typing import List, Dict
 
 from scipy import integrate as spi
@@ -82,7 +86,7 @@ def write_to_file(n_list: List, res: Dict, filename: str):
 
 def plot(n_list: List, errors: Dict):
     """
-    Plot the error
+    Draw the plot of the error
     """
     for method in errors.keys():
         plt.loglog(n_list, errors[method], marker="o", label=method)
